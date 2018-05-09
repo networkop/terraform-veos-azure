@@ -1,0 +1,5 @@
+terraform.*
+go
+provider.tf
+.terraform
+crash.log
