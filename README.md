@@ -1,6 +1,12 @@
 # Arista vEOS on Azure and CVP
 
 # Usage
+
+Build CVP plugin
+```
+./build.sh
+```
+
 To create:
 ```
 terraform init
