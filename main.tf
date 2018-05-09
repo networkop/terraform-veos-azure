@@ -1,7 +1,17 @@
 
+# provider "cvp" {
+#   cvp_address = "..."
+#   cvp_user    = "..."
+#   cvp_pwd     = "..."
+# }
+# 
+# provider "azurerm" {
+#   subscription_id = "..."
+#   client_id       = "..."
+#   client_secret   = "..."
+#   tenant_id       = "..."
 
 # Creating Devices inside CVP
-# Implicit reference means it'll be done last
 resource "cvp_device" "Device-A" {
     ip_address = "${data.azurerm_public_ip.main.ip_address}"
     depends_on = ["azurerm_virtual_machine.veos-1"]
