@@ -1,40 +1,67 @@
 # Azure and Cloudvision integration demo
 
-## Usage
+## Prerequisites
 
 1. Install [terraform](https://www.terraform.io/intro/getting-started/install.html)
-2. Build CVP plugin for terraform
 
-```bash
-chmod +x ./build.sh; ./build.sh
-```
+2. Setup Azure and CVP access credentials
 
-3. Initialise terraform
-
-```bash
-terraform init
-```
-
-4. Setup terraform Azure and CVP providers
+Follow the instructions in the file
 
 ```bash
 cat provider.tf.example
 ```
 
-5. Adjust input variables
+3. Setup Password and keys
+
+Follow the instructions in the file
 
 ```bash
-cat terraform.tfvars
-cat secret.tfvars.example
+cat secrets.tfvars.examples
 ```
 
-6. Review changes to be applied
+
+## (Optional) IPsec headend setup
+
+For a full demo, IPsec headend can be setup beforehand
 
 ```bash
-terraform plan -var-file="secrets.tfvars"
+cd ./headend
+chmod +x ./buildme.sh; ./buildme.sh
 ```
 
-7. Apply terraform configuration
+Note that since tunnel destination is not known at this stage, this will need to be updated once the peer has been setup
+
+## Usage
+
+
+1. Build CVP plugin for terraform
+
+```bash
+chmod +x ./build.sh; ./build.sh
+```
+
+2. Initialise terraform
+
+```bash
+terraform init
+```
+
+3. Review input variables and change if needed
+
+Variables definition and descriptions:
+
+```bash
+cat variables.tf
+```
+
+Variables values:
+
+```bash 
+cat terraform.tfvars 
+```
+
+4. Apply terraform configuration
 
 ```bash
 terraform apply -var-file="secrets.tfvars"
@@ -42,14 +69,14 @@ terraform apply -var-file="secrets.tfvars"
 
 Answer 'yes' when prompted
 
-8. Manage vEOS lifecycle from CVP
+5. Manage vEOS lifecycle from CVP
 
-  * CVP should have new vEOS device and a new IPsec configlet created after the last step
+  * CVP should have the new vEOS device and IPsec configlet created after the last step
   * Create a reconcile configlet by right-clicking the device -> Manage -> Configlet -> Validate -> Reconcile
-  * After reconcile configlet has been created, assign and apploy the new IPsec configlet to the device
-  * New local/remote subnets can be created by updating IPsec configlet
+  * After reconcile configlet has been created, assign and apply the new IPsec configlet to the device
+  * Future updates, e.g. new local/remote subnets, can be done by updating IPsec configlet on CVP
 
-9. Destroy terraform configuration
+## Cleanup 
 
 ```bash
 terraform destroy -var-file="secrets.tfvars"
