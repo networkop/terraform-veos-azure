@@ -18,12 +18,12 @@ interface loopback 0
  ip address ${ publicIP }/32
 !
 interface Ethernet1
-   description "fn=DIC od=UBS-facing"
+   description "Public-facing"
    no switchport
    ip address ${ outside_ip } ${ outside_netmask }
 !
 interface Ethernet2
-   description "fn=SRV od=User-facing"
+   description "User-facing"
    no switchport
    vrf forwarding VPN
    ip address ${ inside_ip } ${ inside_netmask }
