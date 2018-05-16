@@ -1,5 +1,9 @@
-terraform.*
-go
+secrets.tfvars
 provider.tf
-.terraform
-crash.log
+terraform.tfstate*
+.terraform*
+terraform.d
+headend/provider.tf
+headend/terraform.tfstate*
+headend/.terraform*
+headend/terraform.d

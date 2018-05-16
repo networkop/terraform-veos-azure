@@ -1,0 +1,16 @@
+# 1. Fill out below variables with real values
+# 2. Rename this file to provider.tf
+
+provider "cvp" {
+  cvp_address = "localhost"
+  cvp_user    = "Username"
+  cvp_pwd     = "Password"
+}
+
+
+provider "azurerm" {
+  subscription_id = "ffffffff-1111-2222-3333-444444444444"
+  client_id       = "ffffffff-1111-2222-3333-444444444444"
+  client_secret   = "AAAA="
+  tenant_id       = "ffffffff-1111-2222-3333-444444444444"
+}

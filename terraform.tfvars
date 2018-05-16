@@ -1,0 +1,12 @@
+# Resource group should exist!
+resource_group = "EMEA-MKASHIN"
+location       = "UK West"
+address_space  = "10.8.0.0/16"
+local_asn      = "65001"
+community      = "65001"
+peer_tunnel_ip = "169.254.0.10"
+peer_asn       = "65000"
+peer_desc      = "IPsec_Headend"
+peer_subnet_1  = "10.7.2.0/24"
+tunnel_ip      = "169.254.0.20/24"
+tunnel_dest    = "51.140.12.78"
