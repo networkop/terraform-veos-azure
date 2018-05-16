@@ -1,4 +1,4 @@
-# Azure and Cloudvision integration demo
+# Azure and Cloudvision integration with Terraform
 
 ## Prerequisites
 
