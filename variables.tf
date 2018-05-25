@@ -5,11 +5,23 @@ variable "prefix" {
 variable "resource_group" {
     description = "Existing resource group inside Azure"
 }
+
+variable "vnet_name" {
+    description = "Existing VNET inside Azure"
+}
+
 variable "location" {
     description = "Desired location for objects and their metadata"
 }
-variable "address_space" {
-    description = "RFC1918 prefix to be assigned to VNET"
+variable "inside_sub" {
+    description = "RFC1918 prefix to be created for internal vEOS interface"
+}
+
+variable "outside_sub" {
+    description = "RFC1918 prefix to be created for external vEOS interface"
+}
+variable "test_sub" {
+    description = "RFC1918 prefix to be created for test VM"
 }
 variable "admin_username" {
     description = "Admin username configured on vEOS and test VMs"

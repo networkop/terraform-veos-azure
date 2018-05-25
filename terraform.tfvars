@@ -1,7 +1,11 @@
-# Resource group should exist!
+# Resource group and VNET should exist!
 resource_group = "EMEA-MKASHIN"
+vnet_name      = "VNET-WEST"
 location       = "UK West"
-address_space  = "10.8.0.0/16"
+# Subnets should be within the address pool of VNET
+inside_sub     = "10.3.5.0/24"
+outside_sub    = "10.3.6.0/24"
+test_sub       = "10.3.99.0/24"
 local_asn      = "65001"
 community      = "65001"
 peer_tunnel_ip = "169.254.0.10"

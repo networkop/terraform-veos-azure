@@ -14,9 +14,6 @@ aaa root secret ${ password }
 management api http-commands
  no shut
 !
-interface loopback 0
- ip address ${ publicIP }/32
-!
 interface Ethernet1
    description "Public-facing"
    no switchport

@@ -39,13 +39,17 @@ module "veos" {
     prefix                = "${var.prefix}"
     resource_group        = "${var.resource_group}"
     location              = "${var.location}"
-    address_space         = "${var.address_space}"
+    inside_sub            = "${var.inside_sub}"
+    outside_sub           = "${var.outside_sub}"
     peer_subnet_1         = "${var.peer_subnet_1}"
+    vnet_name             = "${var.vnet_name}"
 
     veos_license          = "${var.veos_license}"
     ipsec_license         = "${var.ipsec_license}"
     pub_ssh_key           = "${var.pub_ssh_key}"
     admin_username        = "${var.admin_username}"
     admin_password        = "${var.admin_password}"
+
+    test_sub              = "${var.test_sub}"
 }
 

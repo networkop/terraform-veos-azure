@@ -5,13 +5,13 @@
 # Computing local variables 
 locals {
   virtual_machine_name = "${var.prefix}-VEOS"
+  outside_subnet       = "${var.outside_sub}"
+  inside_subnet        = "${var.inside_sub}"
+  test_subnet          = "${var.test_sub}"
   outside_netmask      = "${cidrnetmask(local.outside_subnet)}"
   outside_gateway      = "${cidrhost(local.outside_subnet, 1)}"
   inside_netmask       = "${cidrnetmask(local.inside_subnet)}"
   inside_gateway       = "${cidrhost(local.inside_subnet, 1)}"
-  outside_subnet       = "${cidrsubnet(var.address_space, 8, 0)}"
-  inside_subnet        = "${cidrsubnet(var.address_space, 8, 1)}"
-  test_subnet          = "${cidrsubnet(var.address_space, 8, 2)}"
 }
 
 # Create custom userdata
@@ -25,7 +25,7 @@ data "template_file" "init" {
 
         # Computed variables
         hostname          = "${local.virtual_machine_name}"
-        publicIP          = "${data.azurerm_public_ip.main.ip_address}"
+       # publicIP          = "${data.azurerm_public_ip.main.ip_address}"
         outside_ip        = "${data.azurerm_network_interface.outside.private_ip_address}"
         outside_netmask   = "${local.outside_netmask}"
         inside_ip         = "${data.azurerm_network_interface.inside.private_ip_address}"
@@ -45,18 +45,18 @@ data "template_file" "init" {
 
 
 # Create a Virtual Network within the Resource Group
-resource "azurerm_virtual_network" "main" {
-  name                = "${var.prefix}-VNET"
-  address_space       = ["${var.address_space}"]
-  resource_group_name = "${var.resource_group}"
-  location            = "${var.location}"
-}
+#resource "azurerm_virtual_network" "main" {
+#  name                = "${var.prefix}-VNET"
+#  address_space       = ["${var.address_space}"]
+#  resource_group_name = "${var.resource_group}"
+#  location            = "${var.location}"
+#}
 
 
 # Create an Outside Subnet within the Virtual Network
 resource "azurerm_subnet" "outside" {
   name                 = "${var.prefix}-VSUB-OUTSIDE"
-  virtual_network_name = "${azurerm_virtual_network.main.name}"
+  virtual_network_name = "${var.vnet_name}"
   resource_group_name  = "${var.resource_group}"
   address_prefix       = "${local.outside_subnet}"
 }
@@ -65,26 +65,26 @@ resource "azurerm_subnet" "outside" {
 # Create an Inside subnet within the Virtual Network
 resource "azurerm_subnet" "inside" {
   name                 = "${var.prefix}-VSUB-INSIDE"
-  virtual_network_name = "${azurerm_virtual_network.main.name}"
+  virtual_network_name = "${var.vnet_name}"
   resource_group_name  = "${var.resource_group}"
   address_prefix       = "${local.inside_subnet}"
 }
 
 
 # Create a Public IP for the Virtual Machine
-resource "azurerm_public_ip" "main" {
-  name                         = "${var.prefix}-PIP"
-  location                     = "${var.location}"
-  resource_group_name          = "${var.resource_group}"
-  public_ip_address_allocation = "Static"
-}
-
-# Creating data to extract Public IP later on
-data "azurerm_public_ip" "main" {
-  name                = "${var.prefix}-PIP"
-  resource_group_name = "${var.resource_group}"
-  depends_on          = ["azurerm_public_ip.main"]
-}
+#resource "azurerm_public_ip" "main" {
+#  name                         = "${var.prefix}-PIP"
+#  location                     = "${var.location}"
+#  resource_group_name          = "${var.resource_group}"
+#  public_ip_address_allocation = "Static"
+#}
+#
+## Creating data to extract Public IP later on
+#data "azurerm_public_ip" "main" {
+#  name                = "${var.prefix}-PIP"
+#  resource_group_name = "${var.resource_group}"
+#  depends_on          = ["azurerm_public_ip.main"]
+#}
 
 # Create a Network Security Group with some rules
 resource "azurerm_network_security_group" "main" {
@@ -132,7 +132,7 @@ resource "azurerm_network_interface" "outside" {
     name                          = "primary"
     subnet_id                     = "${azurerm_subnet.outside.id}"
     private_ip_address_allocation = "dynamic"
-    public_ip_address_id          = "${azurerm_public_ip.main.id}"
+    #public_ip_address_id          = "${azurerm_public_ip.main.id}"
     primary                       = true
   }
 }
@@ -218,7 +218,7 @@ resource "azurerm_virtual_machine" "veos" {
     ]
     connection {
     type     = "ssh"
-    host     = "${data.azurerm_public_ip.main.ip_address}"
+    host     = "${data.azurerm_network_interface.outside.private_ip_address}"
     user     = "root"
     password = "${var.admin_password}"
   }
@@ -248,7 +248,7 @@ resource "azurerm_route_table" "rt_1" {
 # Create a test subnet with UDR
 resource "azurerm_subnet" "local_test" {
   name                 = "${var.prefix}-VSUB-TEST"
-  virtual_network_name = "${azurerm_virtual_network.main.name}"
+  virtual_network_name = "${var.vnet_name}"
   resource_group_name  = "${var.resource_group}"
   address_prefix       = "${local.test_subnet}"
 
@@ -256,12 +256,12 @@ resource "azurerm_subnet" "local_test" {
 
 }
 
-resource "azurerm_public_ip" "local_test" {
-  name                         = "${var.prefix}-PIP-TEST"
-  location                     = "${var.location}"
-  resource_group_name          = "${var.resource_group}"
-  public_ip_address_allocation = "static"
-}
+#resource "azurerm_public_ip" "local_test" {
+#  name                         = "${var.prefix}-PIP-TEST"
+#  location                     = "${var.location}"
+#  resource_group_name          = "${var.resource_group}"
+#  public_ip_address_allocation = "static"
+#}
 
 resource "azurerm_network_interface" "local_test" {
   name                = "${var.prefix}-VNIC-TEST"
@@ -271,9 +271,15 @@ resource "azurerm_network_interface" "local_test" {
   ip_configuration {
     name                          = "testconfiguration1"
     subnet_id                     = "${azurerm_subnet.local_test.id}"
-    public_ip_address_id          = "${azurerm_public_ip.local_test.id}"
+   # public_ip_address_id          = "${azurerm_public_ip.local_test.id}"
     private_ip_address_allocation = "dynamic"
   }
+}
+
+data "azurerm_network_interface" "local_test" {
+    name                = "${var.prefix}-VNIC-TEST"
+    resource_group_name = "${var.resource_group}"
+    depends_on          = ["azurerm_network_interface.local_test"]
 }
 
 resource "azurerm_managed_disk" "local_test" {
@@ -309,7 +315,7 @@ resource "azurerm_virtual_machine" "local_test" {
   }
 
   os_profile {
-    computer_name  = "${azurerm_virtual_network.main.name}-VM-TEST"
+    computer_name  = "${var.prefix}-VM-TEST"
     admin_username = "${var.admin_username}"
     admin_password = "${var.admin_password}"
   }

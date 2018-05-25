@@ -10,8 +10,20 @@ variable "location" {
   default = "UK West"
 }
 
-variable "address_space" {
-  default = "10.8.0.0/16"
+variable "vnet_name" {
+  default = "TEST-VNET"
+}
+
+variable "inside_sub" {
+  default = "10.8.5.0/24"
+}
+
+variable "outside_sub" {
+  default = "10.8.6.0/24"
+}
+
+variable "test_sub" {
+  default = "10.8.99.0/24"
 }
 
 variable "vm_size" {

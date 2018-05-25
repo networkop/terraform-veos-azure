@@ -1,6 +1,6 @@
 
 output "veos_public_ip" {
-  value = "${azurerm_public_ip.main.ip_address}"
+  value = "${data.azurerm_network_interface.outside.private_ip_address}"
 }
 
 output "veos_username" {
@@ -16,7 +16,7 @@ output "created_subnets" {
 }
 
 output "test_vm_public_ip" {
-  value = "${azurerm_public_ip.local_test.ip_address}"
+  value = "${data.azurerm_network_interface.local_test.private_ip_address}"
 }
 
 output "local_subnet_1" {

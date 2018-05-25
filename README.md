@@ -79,7 +79,7 @@ Answer 'yes' when prompted
 ## Cleanup 
 
 ```bash
-terraform destroy -var-file="secrets.tfvars"
+TF_WARN_OUTPUT_ERRORS=1 terraform destroy -var-file="secrets.tfvars"
 ```
 
 Answer 'yes' when prompted
