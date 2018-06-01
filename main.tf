@@ -2,7 +2,13 @@
 # Create a Devices inside CVP
 resource "cvp_device" "veos" {
     ip_address = "${module.veos.veos_public_ip}"
+    container = "UBS"
     wait = "60"
+    reconcile = true
+    configlets = [{
+        name = "${cvp_configlet.ipsec.name}"
+        push = true
+    }]
     depends_on = ["module.veos", "cvp_configlet.ipsec"]
 }
 
